@@ -8,3 +8,10 @@ Mar. 25th
 Idea:
 Can we use BERT or other general language model to guide the training of GAN?
 Looking into Transformer structure and BERT.
+
+Mar. 26th
+1, In bert_research folder, managed to run bert on SQUAD problem. After several minutes' finetuning, it can already reach accuracy of about 83%
+2, In BERT folder, using bert from tensorflow hub to making output. It works.
+3, Now implementing functions and additional layers to finetune BERT to see how well it can be on predicting missing words.
+TODO:
+see #3 above

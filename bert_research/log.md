@@ -1,0 +1,3 @@
+Mar. 26th
+1, run_squad is runnable via run_squad.sh. Training file required by SQUAD and BERT initial parameters are all placed in Downloads folder.
+2, By counting, there are 87599 question-answer pairs in SQUAD-1 dataset, from 18896 paragraphs of 442 articles. It should take around 5 hours to complete 1 epoch. Let's increase batch size to speed up...
