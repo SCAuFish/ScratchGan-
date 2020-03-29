@@ -1,2 +1,4 @@
 scratchgan/emnlp_data/*
 bert_research/cased_L-12_H-768_A-12/*
+checkpoint
+trained_model*
