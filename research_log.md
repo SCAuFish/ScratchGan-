@@ -48,3 +48,6 @@ TODO:
 
 TODO:
 5, Implement some easy functions with BERT, such as sentiment analysis
+
+## Mar. 29th
+1. Tried using BERT for easy task: sentiment analysis. But it "cleverly" learned to give 0.5 on all the inputs since the dataset is balanced so that the loss could be minimized. Interesting.
