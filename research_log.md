@@ -51,3 +51,15 @@ TODO:
 
 ## Mar. 29th
 1. Tried using BERT for easy task: sentiment analysis. But it "cleverly" learned to give 0.5 on all the inputs since the dataset is balanced so that the loss could be minimized. Interesting.
+
+## Mar. 30th
+1. The added dense linear layer is not in "trainable_weights"? Investigate about that. Also add some more layers on top and maybe remove the sigmoid at the end.
+Followup: the trainable weights are there. It is just there need to be input through it before its initialization
+
+## Apr. 1st
+1. Huge discovery when re-reading the BERT paper: in the paper's setting, when predicting the masked word, the vector input to softmax classification layer is the vector corresponding to the position of the masked word. On the other hand, the pooled single-vector output was used to accomplish "Next Sentence Prediction" task. Let's try with the other input.
+
+2. Noticed that in the BERT paper, they reached pretty high accuracy (~90%) on `Cloze` test. Trying to reimplement the word predictor to see if it works better.
+
+TODO:
+1. In BERT_cloze, the model is already implemented, try running sanity test and start training
