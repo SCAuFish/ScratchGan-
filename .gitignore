@@ -5,3 +5,6 @@ trained_model*
 BERT/sentences.txt
 BERT/.ipynb_checkpoints/BERT_Cloze-checkpoint.ipynb BERT/.ipynb_checkpoints/BERT_experiment-checkpoint.ipynb BERT/.ipynb_checkpoints/BERT+Sentiment Analysis-checkpoint.ipynb
 BERT/bert_sentiment_analysis_v1.data-00000-of-00002 BERT/bert_sentiment_analysis_v1.data-00001-of-00002 BERT/bert_sentiment_analysis_v1.index
+BERT/bert_sentiment_analysis_v1.data-00000-of-00002
+BERT/bert_sentiment_analysis_v1.data-00001-of-00002
+BERT/bert_sentiment_analysis_v1.index

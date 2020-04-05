@@ -63,3 +63,12 @@ Followup: the trainable weights are there. It is just there need to be input thr
 
 TODO:
 1. In BERT_cloze, the model is already implemented, try running sanity test and start training
+
+Q:
+1, GAN - a special version of Actor-Critic?
+2, BERT: a critic or environment
+
+## Apr. 5th
+1. Rewrite the Word Predictor in BERT_cloze, implemented some training optimization. After one epoch of training, it is giving some reasonable outputs (although not the same word, POS is basically correct). Trying to run more epochs to see the result.
+
+2. TODO: use BERT as discriminator and only output whether the sentence is generated or true sentences.
