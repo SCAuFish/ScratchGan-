@@ -10,3 +10,5 @@ BERT/bert_sentiment_analysis_v1.data-00001-of-00002
 BERT/bert_sentiment_analysis_v1.index
 BERT/word_predictor_9.*
 BERT/.ipynb_checkpoints/*
+BERT/masked_sentences.txt
+BERT/text_generator_0.*
