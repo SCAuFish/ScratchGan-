@@ -8,3 +8,5 @@ BERT/bert_sentiment_analysis_v1.data-00000-of-00002 BERT/bert_sentiment_analysis
 BERT/bert_sentiment_analysis_v1.data-00000-of-00002
 BERT/bert_sentiment_analysis_v1.data-00001-of-00002
 BERT/bert_sentiment_analysis_v1.index
+BERT/word_predictor_9.*
+BERT/.ipynb_checkpoints/*

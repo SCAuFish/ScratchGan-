@@ -68,7 +68,12 @@ Q:
 1, GAN - a special version of Actor-Critic?
 2, BERT: a critic or environment
 
-## Apr. 5th
+## Apr. 4th
 1. Rewrite the Word Predictor in BERT_cloze, implemented some training optimization. After one epoch of training, it is giving some reasonable outputs (although not the same word, POS is basically correct). Trying to run more epochs to see the result.
 
 2. TODO: use BERT as discriminator and only output whether the sentence is generated or true sentences.
+
+## Apr. 5th
+1. Train BERT_Cloze for 10 epochs and it reaches pretty decent word prediction result. For example when asked to predict which word fits in `"the [] has caused panic around the world"`, top five candidates are ['incident']['attack']['case']['shooting']['virus'].
+
+2. As a result of above, maybe we can try with BERT text generator by giving all mask words at first?
