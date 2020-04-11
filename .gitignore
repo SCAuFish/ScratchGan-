@@ -12,3 +12,5 @@ BERT/word_predictor_9.*
 BERT/.ipynb_checkpoints/*
 BERT/masked_sentences.txt
 BERT/text_generator_0.*
+BERT/text_generator_9.data-00000-of-00002 BERT/text_generator_9.data-00001-of-00002 BERT/text_generator_9.index
+BERT/text_generator_9.*

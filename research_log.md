@@ -77,3 +77,10 @@ Q:
 1. Train BERT_Cloze for 10 epochs and it reaches pretty decent word prediction result. For example when asked to predict which word fits in `"the [] has caused panic around the world"`, top five candidates are ['incident']['attack']['case']['shooting']['virus'].
 
 2. As a result of above, maybe we can try with BERT text generator by giving all mask words at first?
+
+## Apr. 6th 
+1. Now training BERT_Generator to complete a sentence given the previous part of the sentence.
+
+## Apr. 11th
+1. Using BERT to directly generate a sentence does not perform very well. It starts with a sentence covered all by masks, and generate word one by one revealing the word under the mask. A possible modification: first generate the word on the position with highest confidence? So that the word generation does not have to follow the order from left to right.
+2. Let's first make the sentence scorer, scoring each word choice in the sentence.
