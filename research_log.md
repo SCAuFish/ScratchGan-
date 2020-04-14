@@ -83,4 +83,13 @@ Q:
 
 ## Apr. 11th
 1. Using BERT to directly generate a sentence does not perform very well. It starts with a sentence covered all by masks, and generate word one by one revealing the word under the mask. A possible modification: first generate the word on the position with highest confidence? So that the word generation does not have to follow the order from left to right.
+
 2. Let's first make the sentence scorer, scoring each word choice in the sentence.
+
+3. During training, as shown in line 202 of experiments.py, output from discriminator per word is inputted to calculate REINFORCE loss. Is it possible to pass in BERT scorer output at the same place?
+Sounds doable, needs to look into reinforce_loss function in losses.py.
+
+4. Since the codes were for python2, many functions need to be refactored. Like xrange() should be changed to range()
+
+## Apr. 13th
+1. Trying to integrate the critic with their ScratchGan. Since their codes are all in python2 and tensorflow 1.x, decided to move to those versions. Need some refactor to make it work.

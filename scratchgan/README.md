@@ -58,7 +58,7 @@ Install requirements:
 
 Run training and evaluation jobs:
 
-    python2 -m scratchgan.experiment --mode="train" &
+    python2 -m scratchgan.experiment --mode="train" --data_dir="scratchgan/emnlp_data" &
     python2 -m scratchgan.experiment --mode="evaluate_pair" &
 
 The evaluation code is designed to run in parallel with the training.

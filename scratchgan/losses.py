@@ -67,6 +67,9 @@ def reinforce_loss(disc_logits, gen_logprobs, gamma, decay):
   # Compute cumulative rewards.
   rewards_list = tf.unstack(rewards, axis=1)
   cumulative_rewards = []
+
+  # Cheng: the reward of each step is a discounted sum of all following rewards.
+  # Actually calculation can be improved
   for t in xrange(sequence_length):
     cum_value = tf.zeros(shape=[batch_size])
     for s in xrange(t, sequence_length):
