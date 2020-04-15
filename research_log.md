@@ -93,3 +93,6 @@ Sounds doable, needs to look into reinforce_loss function in losses.py.
 
 ## Apr. 13th
 1. Trying to integrate the critic with their ScratchGan. Since their codes are all in python2 and tensorflow 1.x, decided to move to those versions. Need some refactor to make it work.
+
+## Apr. 14th
+1. In BERT_Cloze_Py2, I have successfully run a BERT word predictor in tensorflow 1.14 and python 2 fashion using Graph execution. (So smart)

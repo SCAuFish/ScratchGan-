@@ -30,6 +30,7 @@ from scratchgan import generators
 from scratchgan import losses
 from scratchgan import reader
 from scratchgan import utils
+from scratchgan import bert_discriminator
 
 flags.DEFINE_string("dataset", "emnlp2017", "Dataset.")
 flags.DEFINE_integer("batch_size", 512, "Batch size")
