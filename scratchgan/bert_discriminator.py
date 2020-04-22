@@ -10,8 +10,6 @@ import numpy as np
 
 BERT_DIR = "/home/aufish/Downloads/bert"
 
-bert_module = hub.KerasLayer(BERT_DIR, trainable=True)
-
 from bert import tokenization
 
 def create_tokenizer(vocab_file, do_lower_case=False):
@@ -52,9 +50,10 @@ def convert_sentences_to_features(sentences, tokenizer, max_seq_len=50):
 
 class WordPredictor(tf.keras.Model):
     # The output means, how possible the given word may fit into the blank
-    def __init__(self, class_num, bert=bert_module, dropout=0.1):
+    def __init__(self, class_num, dropout=0.1):
         super(WordPredictor, self).__init__()
-        self.bert = bert
+
+        self.bert = hub.KerasLayer(BERT_DIR, trainable=True)
         self.drop = tf.keras.layers.Dropout(rate=dropout, trainable=True)
         
         self.dense = tf.keras.layers.Dense(
@@ -80,6 +79,12 @@ class WordPredictor(tf.keras.Model):
 tokenizer = create_tokenizer(BERT_DIR + "/assets/vocab.txt")
 
 MASK_ID = tokenizer.convert_tokens_to_ids(['[MASK]'])[0]
+
+def convert_token_to_id(word):
+    try:
+        return tokenizer.convert_tokens_to_ids([word])[0]
+    except:
+        return tokenizer.convert_tokens_to_ids(['[UNK]'])[0]
 
 def score_prediction(model, sentence, blank_loc, word):
     # Given a sentence and at which location (1-indexed) it is blank
@@ -112,3 +117,10 @@ def score_sentence(model, sentence):
         scores.append(result)
     
     return tf.convert_to_tensor(scores)
+
+def score_sentences(model, sentences):
+    print("in score_sentences")
+    print(type(sentences))
+    print(sentences)
+
+    return None

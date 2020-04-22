@@ -33,7 +33,7 @@ from scratchgan import utils
 from scratchgan import bert_discriminator
 
 flags.DEFINE_string("dataset", "emnlp2017", "Dataset.")
-flags.DEFINE_integer("batch_size", 512, "Batch size")
+flags.DEFINE_integer("batch_size", 500, "Batch size")
 flags.DEFINE_string("gen_type", "lstm", "Generator type.")
 flags.DEFINE_string("disc_type", "lstm", "Discriminator type.")
 flags.DEFINE_string("disc_loss_type", "ce", "Loss type.")
@@ -62,7 +62,7 @@ flags.DEFINE_float("disc_beta1", 0.5, "Beta1 for discriminator.")
 flags.DEFINE_float("gamma", 0.23, "Discount factor.")
 flags.DEFINE_float("baseline_decay", 0.08, "Baseline decay rate.")
 flags.DEFINE_string("mode", "train", "train or evaluate_pair.")
-flags.DEFINE_string("checkpoint_dir", "/tmp/emnlp2017/checkpoints/",
+flags.DEFINE_string("checkpoint_dir", "./checkpoints/",
                     "Directory for checkpoints.")
 flags.DEFINE_integer("export_every", 1000, "Frequency of checkpoint exports.")
 flags.DEFINE_integer("num_examples_for_eval", int(1e4),
@@ -103,7 +103,10 @@ def train(config):
   """Train."""
   logging.info("Training.")
 
+  from tensorflow.python.keras.backend import set_session
   tf.reset_default_graph()
+  sess = tf.Session()
+  set_session(sess)
   np.set_printoptions(precision=4)
 
   # Get data.
@@ -114,6 +117,9 @@ def train(config):
   vocab_size = len(word_to_id)
   max_length = reader.MAX_TOKENS_SEQUENCE[config.dataset]
   logging.info("Vocabulary size: %d", vocab_size)
+
+  # id to id: convert id in scratchgan dict to id in bert dict
+  ids_to_idb = {v : bert_discriminator.convert_token_to_id(w) for w, v in word_to_id.iteritems()}
 
   iterator = reader.iterator(raw_data=train_data, batch_size=config.batch_size)
   iterator_valid = reader.iterator(
@@ -167,6 +173,7 @@ def train(config):
       embedding_source=embedding_source,
       vocab_file=vocab_file,
   )
+  # This gen_outputs should be a sequence of tokens?
   gen_outputs = gen()
 
   # Create discriminator.
@@ -185,6 +192,24 @@ def train(config):
   disc_logits_fake = disc(
       sequence=gen_outputs["sequence"],
       sequence_length=gen_outputs["sequence_length"])
+
+ 
+  sess.run(tf.global_variables_initializer())
+  print("disc_logits_fake")
+  print(disc_logits_fake)
+  # Create BERT discriminator
+  bert_disc = bert_discriminator.WordPredictor(1)
+  bert_disc.load_weights("./BERT/word_predictor_9")
+
+#   gen_sequence_np = sess.run(gen_outputs["sequence"])
+#   sentencen_num = gen_sequence_np.shape[0]
+  gen_sequence = gen_outputs["sequence"].eval(session=sess)
+  print(gen_sequence.shape)
+#   gen_sequence = tf.map_fn(lambda x : tf.map_fn(lambda y : ids_to_idb[y], x), gen_sequence)
+#   sentencen_num = gen_sequence.shape[0]
+#   sentences = [utils.sequence_to_sentence(gen_sequence[i, :], id_to_word) for i in range(sentencen_num)]
+
+  bert_score = bert_discriminator.score_sentences(bert_disc, gen_sequence)
 
   # Loss of the discriminator.
   if config.disc_loss_type == "ce":
@@ -257,47 +282,42 @@ def train(config):
 
   # Training.
   logging.info("Starting training")
-  with tf.Session() as sess:
 
-    sess.run(tf.global_variables_initializer())
-    latest_ckpt = tf.train.latest_checkpoint(config.checkpoint_dir)
-    if latest_ckpt:
+  sess.run(tf.global_variables_initializer())
+  latest_ckpt = tf.train.latest_checkpoint(config.checkpoint_dir)
+  if latest_ckpt:
       saver.restore(sess, latest_ckpt)
-
-    for step in xrange(config.num_steps):
+  for step in xrange(config.num_steps):
       real_data_np = iterator.next()
       train_feed = {
           real_sequence: real_data_np["sequence"],
           real_sequence_length: real_data_np["sequence_length"],
       }
-
       # Update generator and discriminator.
       for _ in xrange(config.num_disc_updates):
         sess.run(disc_update, feed_dict=train_feed)
       for _ in xrange(config.num_gen_updates):
         sess.run(gen_update, feed_dict=train_feed)
-
       # Reporting
       if step % config.export_every == 0:
         gen_sequence_np, metrics_np = sess.run(
-            [gen_outputs["sequence"], metrics], feed_dict=train_feed)
+          [gen_outputs["sequence"], metrics], feed_dict=train_feed)
         metrics_np["gen_sentence"] = utils.sequence_to_sentence(
-            gen_sequence_np[0, :], id_to_word)
+          gen_sequence_np[0, :], id_to_word)
         saver.save(
-            sess,
-            save_path=config.checkpoint_dir + "scratchgan",
-            global_step=global_step)
+          sess,
+          save_path=config.checkpoint_dir + "scratchgan",
+          global_step=global_step)
         metrics_np["model_path"] = tf.train.latest_checkpoint(
-            config.checkpoint_dir)
+          config.checkpoint_dir)
         logging.info(metrics_np)
-
-    # After training, export models.
-    saver.save(
-        sess,
-        save_path=config.checkpoint_dir + "scratchgan",
-        global_step=global_step)
-    logging.info("Saved final model at %s.",
-                 tf.train.latest_checkpoint(config.checkpoint_dir))
+  # After training, export models.
+  saver.save(
+      sess,
+      save_path=config.checkpoint_dir + "scratchgan",
+      global_step=global_step)
+  logging.info("Saved final model at %s.",
+                  tf.train.latest_checkpoint(config.checkpoint_dir))
 
 
 def evaluate_pair(config, batch_size, checkpoint_path, data_dir, dataset,

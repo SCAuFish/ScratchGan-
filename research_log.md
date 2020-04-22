@@ -96,3 +96,15 @@ Sounds doable, needs to look into reinforce_loss function in losses.py.
 
 ## Apr. 14th
 1. In BERT_Cloze_Py2, I have successfully run a BERT word predictor in tensorflow 1.14 and python 2 fashion using Graph execution. (So smart)
+
+## Apr. 21st
+1. Tring to integrate bert discriminator into ScratchGan. Here are some notes:
+    disc_logits returned from discriminator: `Tensor("LSTMEmbedDiscNet_1/mul_2:0", shape=(500, 52), dtype=float32)`
+
+    500 is batch size. 52 should be max sequence length
+
+    gen_output from generator: `{'sequence_length': <tf.Tensor 'lstm_gen/Minimum:0' shape=(500,) dtype=int32>, 'logprobs': <tf.Tensor 'lstm_gen/mul_1:0' shape=(500, 52) dtype=float32>, 'sequence': <tf.Tensor 'lstm_gen/mul:0' shape=(500, 52) dtype=int32>}`
+
+2. It is too complex to integrate it in graph execution mode. The key problem now is, we need to transform indices of scratchgan to indices of bert module. Due to graph execution, we cannot use regular way with dict. In jupyter notebook we showed that there is some way to first eval, and then deal with the result without hurting the graph. Should try this way.
+
+3. idk. Maybe the current way works? I notice that loading from checkpoint is causing a lot of issue. Maybe because I always ctrl+C to end the program. If nothing else, delete checkpoint files and run.

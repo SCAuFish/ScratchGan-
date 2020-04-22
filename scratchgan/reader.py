@@ -55,12 +55,14 @@ def _build_vocab(json_data):
     for title in sentence["t"]:
       title_tokens = tokenize(title)
       vocab.update(title_tokens)
+
   # Most common words first.
   count_pairs = sorted(vocab.items(), key=lambda x: (-x[1], x[0]))
   words, _ = zip(*count_pairs)
   words = list(words)
   if UNK not in words:
     words = [UNK] + words
+  words.remove('')
   word_to_id = dict(zip(words, range(len(words))))
 
   # Tokens are now sorted by frequency. There's no guarantee that `PAD` will
