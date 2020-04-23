@@ -33,7 +33,7 @@ from scratchgan import utils
 from scratchgan import bert_discriminator
 
 flags.DEFINE_string("dataset", "emnlp2017", "Dataset.")
-flags.DEFINE_integer("batch_size", 500, "Batch size")
+flags.DEFINE_integer("batch_size", 1, "Batch size")
 flags.DEFINE_string("gen_type", "lstm", "Generator type.")
 flags.DEFINE_string("disc_type", "lstm", "Discriminator type.")
 flags.DEFINE_string("disc_loss_type", "ce", "Loss type.")
@@ -204,12 +204,13 @@ def train(config):
 #   gen_sequence_np = sess.run(gen_outputs["sequence"])
 #   sentencen_num = gen_sequence_np.shape[0]
   gen_sequence = gen_outputs["sequence"].eval(session=sess)
+  gen_length   = gen_outputs["sequence_length"].eval(session=sess)
   print(gen_sequence.shape)
-#   gen_sequence = tf.map_fn(lambda x : tf.map_fn(lambda y : ids_to_idb[y], x), gen_sequence)
+  # gen_sequence = tf.map_fn(seqs_to_seqb, gen_sequence)
 #   sentencen_num = gen_sequence.shape[0]
 #   sentences = [utils.sequence_to_sentence(gen_sequence[i, :], id_to_word) for i in range(sentencen_num)]
 
-  bert_score = bert_discriminator.score_sentences(bert_disc, gen_sequence)
+  bert_score = bert_discriminator.score_sentences(bert_disc, gen_sequence, gen_length, ids_to_idb)
 
   # Loss of the discriminator.
   if config.disc_loss_type == "ce":
@@ -226,6 +227,7 @@ def train(config):
   # Loss of the generator.
   gen_loss, cumulative_rewards, baseline = losses.reinforce_loss(
       disc_logits=disc_logits_fake,
+      bert_scores=bert_score,
       gen_logprobs=gen_outputs["logprobs"],
       gamma=config.gamma,
       decay=config.baseline_decay)

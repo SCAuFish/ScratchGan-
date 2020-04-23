@@ -108,3 +108,6 @@ Sounds doable, needs to look into reinforce_loss function in losses.py.
 2. It is too complex to integrate it in graph execution mode. The key problem now is, we need to transform indices of scratchgan to indices of bert module. Due to graph execution, we cannot use regular way with dict. In jupyter notebook we showed that there is some way to first eval, and then deal with the result without hurting the graph. Should try this way.
 
 3. idk. Maybe the current way works? I notice that loading from checkpoint is causing a lot of issue. Maybe because I always ctrl+C to end the program. If nothing else, delete checkpoint files and run.
+
+## Apr. 22nd
+1. Okay now it runs. But for now I am simply adding word-wise score from bert to disc_fake logits. Need to take a look into whether that makes sense.

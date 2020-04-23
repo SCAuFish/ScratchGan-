@@ -42,7 +42,7 @@ def sequential_cross_entropy_loss(logits, expected):
   return tf.reshape(ce, [batch_size, sequence_length])
 
 
-def reinforce_loss(disc_logits, gen_logprobs, gamma, decay):
+def reinforce_loss(disc_logits, bert_scores, gen_logprobs, gamma, decay):
   """The REINFORCE loss.
 
   Args:
@@ -60,9 +60,10 @@ def reinforce_loss(disc_logits, gen_logprobs, gamma, decay):
   gen_logprobs.shape.assert_is_compatible_with([batch_size, sequence_length])
 
   disc_predictions = tf.nn.sigmoid(disc_logits)
+  bert_predictions = tf.nn.sigmoid(bert_scores)
 
   # MaskGAN uses log(D), but this is more stable empirically.
-  rewards = 2.0 * disc_predictions - 1
+  rewards = disc_predictions + bert_predictions - 1
 
   # Compute cumulative rewards.
   rewards_list = tf.unstack(rewards, axis=1)
