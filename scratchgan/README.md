@@ -56,6 +56,9 @@ Install requirements:
 
     pip install -r scratchgan/requirements.txt
 
+Run on small dataset for sanity check
+  python2 -m scratchgan.experiment --mode="train" --data_dir="scratchgan/small_data"
+
 Run training and evaluation jobs:
 
     python2 -m scratchgan.experiment --mode="train" --data_dir="scratchgan/emnlp_data" &
