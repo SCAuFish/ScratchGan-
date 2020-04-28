@@ -63,7 +63,8 @@ def reinforce_loss(disc_logits, bert_scores, gen_logprobs, gamma, decay):
   bert_predictions = tf.nn.sigmoid(bert_scores)
 
   # MaskGAN uses log(D), but this is more stable empirically.
-  rewards = disc_predictions + bert_predictions - 1
+  # rewards = 1.5 * disc_predictions + 0.5 * bert_predictions - 1
+  rewards = 2 * bert_predictions - 1            # Test whether bert_predictions change with different inputs
 
   # Compute cumulative rewards.
   rewards_list = tf.unstack(rewards, axis=1)

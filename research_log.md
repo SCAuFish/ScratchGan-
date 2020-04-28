@@ -111,3 +111,11 @@ Sounds doable, needs to look into reinforce_loss function in losses.py.
 
 ## Apr. 22nd
 1. Okay now it runs. But for now I am simply adding word-wise score from bert to disc_fake logits. Need to take a look into whether that makes sense.
+
+## Apr. 26th
+1. Adjusting coefficients of trained disc and bert to be 0.75:0.25 and started running
+
+2. Another thing is that, it is too slow
+
+## Apr. 27th
+1. The thing is, since I called "eval()" in bert to enable tensor indexing and inter-dictionary mapping, the value for them is fixed and is not changing with different inputs. If this cannot be accomplised in graph execution, should I rewrite the whole project?

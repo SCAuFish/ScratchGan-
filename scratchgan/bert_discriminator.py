@@ -116,7 +116,7 @@ def score_prediction(model, sequence, length, blank_loc):
     output = model(bert_input, [blank_loc])
 
     # word_id = tokenizer.convert_tokens_to_ids([word])[0]
-    print(word_id)
+    # print(word_id)
     return tf.gather_nd(output, [0, word_id])
 
 def score_sentence(model, sequence, length):
@@ -131,29 +131,24 @@ def score_sentence(model, sequence, length):
     
     return tf.convert_to_tensor(scores)
 
-def score_sentences(model, sentences, sentences_length, ids_to_idb):
-    print("in score_sentences")
-    print(type(sentences))
-    print(sentences)
-
+def score_sentences(model, sentences, sentences_length, ids_to_idb, sess):
+    sentences = sentences.eval(session=sess)
+    sentences_length = sentences_length.eval(session=sess)
     r = np.ndarray(sentences.shape)
+    # def map_to_bert(x, sess=sess):
+    #     return x.eval(session=sess)
+    # r = tf.map_fn(map_to_bert, sentences)
     for i in range(sentences.shape[0]):
         for j in range(sentences.shape[1]):
             r[i, j] = ids_to_idb[sentences[i, j]]
-
-    print(r)
+            # r[i, j] = sentences[i, j]
 
     # TODO
     # we also need the length for each sentence. pass them to score_prediction/score_sentence to get result back
-    print("in score_sentences length")
-    print(type(sentences_length))
-    print(sentences_length)
 
     scores = []
     for i in range(sentences_length.shape[0]):
         # Loop through all sentences
         scores.append(score_sentence(model, r[i], sentences_length[i]))
 
-    print(scores)
-
-    return scores
+    return scores, sentences

@@ -64,7 +64,7 @@ flags.DEFINE_float("baseline_decay", 0.08, "Baseline decay rate.")
 flags.DEFINE_string("mode", "train", "train or evaluate_pair.")
 flags.DEFINE_string("checkpoint_dir", "./checkpoints/",
                     "Directory for checkpoints.")
-flags.DEFINE_integer("export_every", 1000, "Frequency of checkpoint exports.")
+flags.DEFINE_integer("export_every", 10, "Frequency of checkpoint exports.")
 flags.DEFINE_integer("num_examples_for_eval", int(1e4),
                      "Number of examples for evaluation")
 
@@ -203,14 +203,11 @@ def train(config):
 
 #   gen_sequence_np = sess.run(gen_outputs["sequence"])
 #   sentencen_num = gen_sequence_np.shape[0]
-  gen_sequence = gen_outputs["sequence"].eval(session=sess)
-  gen_length   = gen_outputs["sequence_length"].eval(session=sess)
-  print(gen_sequence.shape)
   # gen_sequence = tf.map_fn(seqs_to_seqb, gen_sequence)
 #   sentencen_num = gen_sequence.shape[0]
 #   sentences = [utils.sequence_to_sentence(gen_sequence[i, :], id_to_word) for i in range(sentencen_num)]
 
-  bert_score = bert_discriminator.score_sentences(bert_disc, gen_sequence, gen_length, ids_to_idb)
+  bert_score, bert_sequence = bert_discriminator.score_sentences(bert_disc, gen_outputs["sequence"], gen_outputs["sequence_length"], ids_to_idb, sess)
 
   # Loss of the discriminator.
   if config.disc_loss_type == "ce":
@@ -313,6 +310,9 @@ def train(config):
         metrics_np["model_path"] = tf.train.latest_checkpoint(
           config.checkpoint_dir)
         logging.info(metrics_np)
+        logging.info(bert_sequence)
+        logging.info(bert_score[0].eval(session=sess))
+        logging.info(disc_logits_fake.eval(session=sess))
   # After training, export models.
   saver.save(
       sess,
